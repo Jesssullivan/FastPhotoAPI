@@ -1,7 +1,15 @@
+# JB:
+**/.idea
+
+# fruit:
+**/.DS_Store
+
+# python and whatnot:
 *.swp
-cache/
-pictures/
+cache/*
+pictures/*
 client_secrets.json
 oidc.json
 upload.enable
-__pycache__/
+**/__pycache__
+**/*.pyc
