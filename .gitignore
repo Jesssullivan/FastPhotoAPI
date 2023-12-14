@@ -1,0 +1,7 @@
+*.swp
+cache/
+pictures/
+client_secrets.json
+oidc.json
+upload.enable
+__pycache__/

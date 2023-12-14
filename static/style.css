@@ -1,0 +1,72 @@
+
+html, body {
+    width: 100%;
+    height:100%;
+  }
+
+  body {
+      background: linear-gradient(+45deg, #5BCEFA, #F5A9B8, #FFFFFF);
+      background-size: 400% 400%;
+      animation: gradient 6.9s ease infinite;
+  }
+
+  @keyframes gradient {
+      0% {
+          background-position: 0% 50%;
+      }
+      50% {
+          background-position: 100% 50%;
+      }
+      100% {
+          background-position: 0% 50%;
+      }
+  }
+
+html {
+    font-family: 'Evil Empire', sans-serif;
+    display: inline-block;
+    text-align: center;
+}
+h1 {
+    font-family: Evil Empire;
+    font-size: 7rem;
+    color: #00000;
+}
+.topnav {
+    overflow: hidden;
+    background-color: clear;
+}
+
+body {
+    margin: 0;
+}
+.content {
+    padding: 0px;
+}
+
+.card-grid {
+    max-width: 800px;
+    margin: 0 auto;
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.card {
+    background-color: white;
+    box-shadow: 15px 15px 22px 10px rgba(140,140,140,.5);
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #034078
+}
+.reading {
+    font-size: 1.2rem;
+    color: #1282A2;
+}
+
+a {
+    text-decoration: none;
+}
