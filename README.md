@@ -17,7 +17,6 @@ pip install -r requirements.txt
   - `/image/<yourimage>?w=69&h=42`
 - Fetch the original, unmodified image `/full/<yourimage>`
 
-
 ## Structure:
 
 This application adopts the factory pattern; `flask run` instantiates the built-in development server by executing `create_app()` at the root of the `app/` package, while `python application.py` creates a new production application, served by waitress. 
