@@ -10,9 +10,12 @@ pip install -r requirements.txt
 
 
 ## Usage:
-- Fetch a resampled & cached image `/image/<yourimage>`
+- Resample & fetch a cached image `/image/<yourimage>`
+- Resample and fetch an image with a specific max dimension:
+  - `/image/<yourimage>?w=69` or
+  - `/image/<yourimage?h=69>` or
+  - `/image/<yourimage>?w=69&h=42`
 - Fetch the original, unmodified image `/full/<yourimage>`
-
 
 ## Structure:
 
@@ -25,12 +28,14 @@ This application adopts the factory pattern; `flask run` instantiates the built-
           ├── __init__.py  #  create and serve development application
           └── main
               ├── config
+│             │         ├── conf.py  # Utility configs and methods 
 │             │         └── config.cfg  # set directories, max image dimensions, etc
 │             ├── fullsize
 │             │         └── routes.py  # Blueprint routing for serving verbatim image files 
 │             ├── __init__.py  # `create_app()` entrypoint
 │             ├── resampled
 │             │         ├── model.py  # Image resampling methods
+│             │         ├── trashd.py  # garbage collector daemon 
 │             │         └── routes.py  # Blueprint routing for `/image/`  
 │             └── static
 │                 └── routes.py  # Blueprint routing for `/static/` 

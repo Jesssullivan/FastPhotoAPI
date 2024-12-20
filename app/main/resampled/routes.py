@@ -2,65 +2,42 @@ import os
 from flask import Blueprint, request, send_from_directory, make_response, render_template, redirect
 from flask import current_app as app
 import werkzeug.utils
-from .model import generate_picture
+from .model import generate_picture, get_image_dimensions
+from ..config.conf import new_client, new_client_dir
+import time
 
 photo_blueprint = Blueprint("photo", __name__)
-
 
 @photo_blueprint.route("/media/<path:path>")
 @photo_blueprint.route("/image/<path:path>")
 @photo_blueprint.route("/images/<path:path>")
 def send_picture(path):
+    usr_id = new_client()
+    usr_dir = new_client_dir(usr_id)
 
-    max_age = 2592000
-
-    y1 = request.args.get("scaley")
-    x1 = request.args.get("scalex")
-    y2 = request.args.get("y")
-    x2 = request.args.get("x")
-
-    # check variables #
-    scaleY, scaleX = (None, None)
-    if y1:
-        scaleY = round(float(y1))
-    elif y2:
-        scaleY = round(float(y2))
-
-    if x1:
-        scaleX = round(float(x1))
-    elif x2:
-        scaleX = round(float(x2))
-
-    pathDebug = path
-
+    w = request.args.get("w", type=float)
+    h = request.args.get("h", type=float)
+    
+    scale_y = round(w) if w else None
+    scale_x = round(h) if h else None
+    
+    crop = bool(request.args.get("crop"))
     encoding = request.args.get("encoding")
-    path, cacheHit = generate_picture(path, scaleX, scaleY, encoding,
-                                      bool(request.args.get("crop")))
 
-    print('received path: ' + path + ' to render')
-    if not path:
-        return "File not found: {}".format(os.path.join('.', pathDebug)), 404
-
-    raw = send_from_directory("../../", path, max_age=max_age)
+    path, cache_hit = generate_picture(usr_dir, path, scale_x, scale_y, encoding, crop)
+    
+    raw = send_from_directory(directory="../../", path=path, as_attachment=False, max_age=2592000)
     response = make_response(raw)
 
     response.headers['X-PICTURE-FACTORY-INTERNAL-FID'] = path
-    response.headers['X-PICTURE-FACTORY-INTERNAL-CACHE-HIT'] = cacheHit
-
-    # check for a cacheTimeout #
-    cacheTimeout = request.args.get("cache-timeout")
-    if not cacheTimeout:
-        cacheTimeout = request.args.get("ct")
-    if cacheTimeout:
-        response.headers['Cache-Control'] = "max-age=" + str(cacheTimeout)
-    else:
-        response.headers['Cache-Control'] = "max-age=" + "3600"
+    response.headers['X-PICTURE-FACTORY-INTERNAL-CACHE-HIT'] = cache_hit
+    cache_timeout = request.args.get("cache-timeout") or request.args.get("ct") or "3600"
+    response.headers['Cache-Control'] = "max-age=" + str(cache_timeout)
 
     if encoding:
-        response.headers['Content-Type'] = "image/{}".format(encoding)
+        response.headers['Content-Type'] = f"image/{encoding}"
 
     return response
-
 
 @photo_blueprint.route("/")
 def photo_list():
